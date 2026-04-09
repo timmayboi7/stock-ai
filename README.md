@@ -1,4 +1,4 @@
-MIT L# TKC Studio Stock AI
+# TKC Studio Stock AI
 
 Automated stock and crypto trading dashboard powered by local and cloud AI. Built by TKC Studio.
 
