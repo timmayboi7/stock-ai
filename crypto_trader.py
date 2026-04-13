@@ -450,8 +450,8 @@ def run_cycle(
             # Convert crypto results to signals_data format
             crypto_signals = [{
                 "ticker": r["alpaca"], "score": r["score"],
-                "action": "BUY" if r["alpaca"] in [e["symbol"] for e in entries] else
-                          "CLOSE" if r["alpaca"] in [e["symbol"] for e in exits] else
+                "action": "BUY" if r["alpaca"] in [e["alpaca"] for e in entries] else
+                          "CLOSE" if r["alpaca"] in [e["alpaca"] for e in exits] else
                           "WATCH" if r["score"] >= ENTRY_SCORE_MIN - 1 else "HOLD",
                 "risk": {"close": r["close"], "atr_pct": r["atr_pct"],
                          "stop_2x_atr": r["stop"], "target_2r": r["target"]},

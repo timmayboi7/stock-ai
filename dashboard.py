@@ -1,12 +1,14 @@
 """
 Stock AI Dashboard — TKC Studio
-All 5 phases in one app.
+All 6 tabs in one app.
 
 Tabs:
-  Watchlist   — live signals + AI deep-dive per ticker
-  Backtest    — run strategy backtests, view equity curves
-  Paper Trade — Alpaca paper portfolio, trigger cycles, trade log
-  Learn       — glossary of every term the app uses
+  Today's Picks — full screener results
+  Watchlist     — watch radar + AI deep-dive
+  Backtest      — strategy backtests
+  Paper Trade   — Alpaca paper portfolio
+  Crypto        — crypto signals + trading
+  Learn         — glossary
 
 Run:
     streamlit run dashboard.py
@@ -23,7 +25,6 @@ import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
-import anthropic
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv

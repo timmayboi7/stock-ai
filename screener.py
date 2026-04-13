@@ -66,7 +66,7 @@ SP500_TICKERS = [
     "TRGP","TGT","TEL","TDY","TFX","TER","TSLA","TXN","TXT","TMO","TJX","TSCO","TT",
     "TDG","TRV","TRMB","TFC","TYL","TSN","USB","UBER","UDR","ULTA","UNP","UAL","UPS",
     "URI","UNH","UHS","VLO","VTR","VLTO","VRSN","VRSK","VZ","VRTX","VIAV","VST","V",
-    "VST","WAB","WMT","DIS","WBD","WM","WAT","WEC","WFC","WELL","WST",
+    "WAB","WMT","DIS","WBD","WM","WAT","WEC","WFC","WELL","WST",
     "WDC","WY","WHR","WMB","WTW","GWW","WYNN","XEL","XYL","YUM","ZBRA","ZBH","ZTS",
 ]
 

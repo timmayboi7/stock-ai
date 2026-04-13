@@ -173,6 +173,14 @@ def build_prompt(
         f"  - {k}: {v}" for k, v in fundamentals.items()
     ) if fundamentals else "  No fundamental data available."
 
+    today = datetime.now().strftime('%Y-%m-%d')
+    close    = risk.get('close', 'N/A')
+    atr      = risk.get('atr', 'N/A')
+    stop_2x  = risk.get('stop_2x_atr', 'N/A')
+    stop_1x  = risk.get('stop_1x_atr', 'N/A')
+    target_2 = risk.get('target_2r', 'N/A')
+    target_3 = risk.get('target_3r', 'N/A')
+
     return f"""You are a professional stock market analyst. Your reader is a beginner investor
 who is new to the stock market and does not understand financial jargon.
 
@@ -188,46 +196,46 @@ Rules:
 - Be honest about uncertainty — do not oversell confidence you do not have
 - Position sizing advice must be conservative and responsible
 
-=== {{ticker}} — {{datetime.now().strftime('%Y-%m-%d')}} ===
+=== {ticker} — {today} ===
 
 WHAT THE PRICE IS DOING:
-  - Current price: ${{risk.get('close', 'N/A')}}
-  - Typical daily price swing: ${{risk.get('atr', 'N/A')}} (the stock normally moves about this much per day)
-  - Technical grade: {{tech_grade}} (score {{tech_score}})
+  - Current price: ${close}
+  - Typical daily price swing: ${atr} (the stock normally moves about this much per day)
+  - Technical grade: {tech_grade} (score {tech_score})
 
 WHAT THE CHARTS ARE SAYING:
-{{sig_block}}
+{sig_block}
 
 SUGGESTED RISK LEVELS:
-  - Cut loss if price drops to: ${{risk.get('stop_2x_atr', 'N/A')}} – ${{risk.get('stop_1x_atr', 'N/A')}}
-  - Take profit target: ${{risk.get('target_2r', 'N/A')}} – ${{risk.get('target_3r', 'N/A')}}
+  - Cut loss if price drops to: ${stop_2x} – ${stop_1x}
+  - Take profit target: ${target_2} – ${target_3}
 
 COMPANY FINANCIAL HEALTH:
-{{fund_block}}
+{fund_block}
 
 RECENT NEWS:
-{{news_block}}
+{news_block}
 
 Respond ONLY with valid JSON — no markdown fences, no extra text:
-{{{{
+{{
   "plain_summary": "2-3 sentences: what is this company, what is the stock doing right now, why does it matter",
   "what_signals_mean": "2-3 sentences translating the chart signals into plain English — what story do they tell together, no jargon",
   "recommendation": "BUY" | "WAIT" | "AVOID",
   "recommendation_reason": "2-3 direct sentences explaining WHY. If risky say so. If timing is bad say so. Be honest.",
   "what_to_watch": "The single most important thing a beginner should monitor. One concrete sentence.",
   "risk_in_plain_english": "How much could you lose and under what scenario. Be honest and specific with dollar amounts if possible.",
-  "if_you_buy": {{{{
+  "if_you_buy": {{
     "suggested_entry": "Specific price or condition — e.g. only buy if price is below $X or wait for it to close above $X first",
     "stop_loss": "The price where you sell to cut losses. Explain in one sentence why this level.",
     "take_profit": "The price target to sell for a gain. Explain what reaching this means.",
     "position_size_advice": "What fraction of investable money to use. Be conservative. E.g. no more than 3-5% of what you can afford to lose entirely."
-  }}}},
+  }},
   "beginner_lesson": "Teach one investing concept this situation illustrates. 2 sentences, plain English.",
   "key_risks": ["first concrete risk in plain English", "second concrete risk", "third concrete risk"],
   "upcoming_catalysts": "What specific event in the next 2-4 weeks could move this stock — earnings date, Fed meeting, product launch, etc.",
   "sentiment": "BULLISH" | "BEARISH" | "NEUTRAL" | "MIXED",
   "conviction": "HIGH" | "MEDIUM" | "LOW"
-}}}}"""
+}}"""
 
 
 # ─────────────────────────────────────────────

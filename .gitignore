@@ -83,3 +83,8 @@ $RECYCLE.BIN/
 *.log
 logs/
 *.tmp
+
+# ── Junk / temp files ──────────────────────────────────────────────────
+*.txt
+dashboard.py.txt
+env.example
