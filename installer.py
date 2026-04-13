@@ -447,7 +447,7 @@ def select_llm(hw: dict) -> dict:
         "[white]The app uses an AI to analyze stocks and give you plain-English\n"
         "recommendations. You need to choose which AI to use.\n\n"
         "[bold]Local AI[/bold] runs entirely on [cyan]your computer[/cyan] — free, private, no account needed.\n"
-        "[bold]Cloud AI[/bold] uses an [cyan]online service[/cyan] — faster and smarter, small monthly cost.[/bold][/white]",
+        "[bold]Cloud AI[/bold] uses an [cyan]online service[/cyan] — faster and smarter, small monthly cost.[/white]",
         border_style="dim", padding=(0,2),
     ))
     blank()
