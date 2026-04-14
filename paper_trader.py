@@ -227,6 +227,7 @@ def place_bracket_order(
             order_class    = OrderClass.BRACKET,
             stop_loss      = StopLossRequest(stop_price=stop_price),
             take_profit    = TakeProfitRequest(limit_price=target_price),
+            extended_hours = False,
         )
         order = client.submit_order(req)
         log_trade({
@@ -360,8 +361,9 @@ def run_cycle(
 
     # ── Market check ─────────────────────────
     if not is_market_open(client) and not dry_run:
-        print("  Market is closed. Skipping order placement.")
-        print("  (Use --dry-run to simulate outside market hours.)")
+        print("  Market is closed. No orders will be placed.")
+        print("  Signals will still be scanned and watchlist updated.")
+        print("  Orders only placed during market hours (9:30 AM - 4:00 PM ET).")
 
     account   = get_account_summary(client)
     positions = get_open_positions(client)
@@ -474,13 +476,19 @@ def run_cycle(
                 "stop": stop, "target": target,
                 "reason": d["action"], "order_id": "", "status": "dry_run",
             })
-        elif is_market_open(client):
+        elif not is_market_open(client):
+            print("[SKIPPED — market closed, bracket orders require open market]")
+            log_trade({
+                "date": datetime.now().isoformat(), "action": "SKIPPED_MARKET_CLOSED",
+                "symbol": sym, "qty": qty, "price": price,
+                "stop": stop, "target": target,
+                "reason": "market closed", "order_id": "", "status": "skipped",
+            })
+        else:
             result = place_bracket_order(
                 client, sym, qty, price, atr, reason=d["action"]
             )
             print("✓" if result else "✗")
-        else:
-            print("[market closed]")
 
     # ── Save WATCH tickers to watchlist ────────────────────────────
     watch_tickers = [
