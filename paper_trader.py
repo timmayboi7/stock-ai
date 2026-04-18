@@ -179,6 +179,140 @@ def is_market_open(client: TradingClient) -> bool:
 
 
 # ─────────────────────────────────────────────
+# POSITION HEALTH CHECK — REATTACH STOPS
+# ─────────────────────────────────────────────
+
+def get_open_orders_by_symbol(client: TradingClient) -> dict:
+    """Return open orders grouped by symbol."""
+    try:
+        orders = client.get_orders(GetOrdersRequest(status=QueryOrderStatus.OPEN))
+        by_symbol = {}
+        for o in orders:
+            sym = o.symbol
+            if sym not in by_symbol:
+                by_symbol[sym] = []
+            by_symbol[sym].append({
+                "type": str(o.order_type),
+                "side": str(o.side),
+            })
+        return by_symbol
+    except Exception as e:
+        print(f"  [!] Could not fetch open orders: {e}")
+        return {}
+
+
+def reattach_stops(client: TradingClient, positions: dict, dry_run: bool = False) -> int:
+    """
+    For each open position missing a stop loss or take profit,
+    fetch current ATR, calculate new levels, and place the missing orders.
+    Returns count of positions fixed.
+    """
+    if not positions:
+        return 0
+
+    import yfinance as yf
+    import ta as _ta
+    import contextlib
+    import io as _io
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    open_orders  = get_open_orders_by_symbol(client)
+    market_open  = is_market_open(client)
+    reattached   = 0
+
+    for sym, pos in positions.items():
+        sym_orders  = open_orders.get(sym, [])
+        has_stop    = any("stop" in o["type"].lower() and "sell" in o["side"].lower() for o in sym_orders)
+        has_target  = any("limit" in o["type"].lower() and "sell" in o["side"].lower() for o in sym_orders)
+
+        if has_stop and has_target:
+            continue
+
+        missing = []
+        if not has_stop:   missing.append("stop loss")
+        if not has_target: missing.append("take profit")
+
+        avg_entry     = pos["avg_entry"]
+        current_price = pos["current_price"]
+
+        # Fetch current ATR
+        try:
+            with contextlib.redirect_stderr(_io.StringIO()):
+                df = yf.download(sym, period="1mo", interval="1d",
+                                 progress=False, auto_adjust=True)
+            df.columns = [c[0].lower() if isinstance(c, tuple) else c.lower()
+                          for c in df.columns]
+            atr = float(_ta.volatility.AverageTrueRange(
+                df["high"], df["low"], df["close"], window=14
+            ).average_true_range().iloc[-1])
+        except Exception:
+            atr = current_price * 0.02
+
+        stop_price   = round(max(avg_entry - atr * STOP_ATR_MULT, current_price * 0.88), 2)
+        target_price = round(avg_entry + atr * TARGET_ATR_MULT, 2)
+        missing_str  = " + ".join(missing)
+
+        print(f"  flag  {sym}  missing {missing_str}  "
+              f"stop=${stop_price}  target=${target_price}", end="  ")
+
+        if dry_run:
+            print("[DRY RUN]")
+            continue
+
+        if not market_open:
+            print("[market closed — retry next open cycle]")
+            continue
+
+        ok = True
+
+        if not has_stop:
+            try:
+                from alpaca.trading.requests import StopOrderRequest
+                req = StopOrderRequest(
+                    symbol=sym, qty=int(pos["qty"]),
+                    side=OrderSide.SELL, time_in_force=TimeInForce.GTC,
+                    stop_price=stop_price,
+                )
+                client.submit_order(req)
+                log_trade({
+                    "date": datetime.now().isoformat(), "action": "STOP_REATTACHED",
+                    "symbol": sym, "qty": int(pos["qty"]),
+                    "price": current_price, "stop": stop_price,
+                    "target": "", "reason": "bracket cancelled — stop reattached",
+                    "order_id": "", "status": "submitted",
+                })
+            except Exception as e:
+                print(f"stop failed: {e}", end="  ")
+                ok = False
+
+        if not has_target:
+            try:
+                req = LimitOrderRequest(
+                    symbol=sym, qty=int(pos["qty"]),
+                    side=OrderSide.SELL, time_in_force=TimeInForce.GTC,
+                    limit_price=target_price,
+                )
+                client.submit_order(req)
+                log_trade({
+                    "date": datetime.now().isoformat(), "action": "TARGET_REATTACHED",
+                    "symbol": sym, "qty": int(pos["qty"]),
+                    "price": current_price, "stop": "",
+                    "target": target_price, "reason": "bracket cancelled — target reattached",
+                    "order_id": "", "status": "submitted",
+                })
+            except Exception as e:
+                print(f"target failed: {e}", end="  ")
+                ok = False
+
+        if ok:
+            print("done")
+            reattached += 1
+
+    return reattached
+
+
+# ─────────────────────────────────────────────
 # ORDER HELPERS
 # ─────────────────────────────────────────────
 
@@ -370,6 +504,13 @@ def run_cycle(
     portfolio = account["portfolio_value"]
 
     print_portfolio(account, positions)
+
+    # ── Position health check — reattach missing stops/targets ────────
+    if positions:
+        print("  Checking position protection...")
+        n = reattach_stops(client, positions, dry_run=dry_run)
+        if n == 0 and not dry_run:
+            print("  All positions are protected.")
 
     # ── Full universe scan via screener ──────────────────────────────
     print("  Scanning full stock universe (S&P 500 + Nasdaq 100)...")
