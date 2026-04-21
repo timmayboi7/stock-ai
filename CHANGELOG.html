@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TKC Studio Stock AI — What's New</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f1117;
+    color: #e0e0e0;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    line-height: 1.7;
+  }
+
+  h1 {
+    font-size: 28px;
+    color: #93c5fd;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-size: 18px;
+    color: #4f6ef7;
+    margin: 48px 0 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e2130;
+  }
+
+  h3 {
+    font-size: 15px;
+    color: #e2e8f0;
+    margin: 32px 0 6px;
+    font-weight: 600;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #1e3a5f;
+    color: #93c5fd;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+    letter-spacing: 0.4px;
+  }
+
+  .what-changed {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+
+  .what-means {
+    font-size: 13px;
+    color: #22c55e;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+
+  p {
+    margin: 4px 0 12px;
+    font-size: 15px;
+    color: #cbd5e1;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #1e2130;
+    margin: 40px 0;
+  }
+
+  .card {
+    background: #1e2130;
+    border: 1px solid #2d3148;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  .card h3 {
+    margin-top: 0;
+  }
+
+  .schedule {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 16px;
+    margin-top: 12px;
+  }
+
+  .schedule-time {
+    color: #22c55e;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .schedule-label {
+    color: #94a3b8;
+    font-size: 14px;
+  }
+
+  footer {
+    margin-top: 64px;
+    color: #334155;
+    font-size: 13px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>TKC Studio Stock AI</h1>
+<div class="subtitle">What's New — Plain English Update Log</div>
+
+<div class="card">
+  <h3>About This App</h3>
+  <p>TKC Studio Stock AI scans the stock market, uses AI to analyze what it finds, and practices trading automatically using <strong style="color:#22c55e">fake money</strong> through Alpaca's paper trading platform. No real money is ever at risk.</p>
+  <p>The app runs on its own 3 times every trading day:</p>
+  <div class="schedule">
+    <span class="schedule-time">8:30 AM</span><span class="schedule-label">Chicago time — market opens</span>
+    <span class="schedule-time">11:00 AM</span><span class="schedule-label">Chicago time — midday check</span>
+    <span class="schedule-time">2:00 PM</span><span class="schedule-label">Chicago time — end of day</span>
+  </div>
+</div>
+
+<hr>
+
+<h2>Latest Updates</h2>
+
+<div class="card">
+  <h3>Trading Protection — Stop Loss &amp; Take Profit Reattachment <span class="tag">New</span></h3>
+  <div class="what-changed">What changed</div>
+  <p>The app now checks every open position at the start of each trading cycle. If a stop loss or take profit order is missing, the app automatically recalculates the correct levels and reattaches them.</p>
+  <div class="what-means">What this means for you</div>
+  <p>Your positions are always protected. You don't need to manually check Alpaca — the app handles it automatically every cycle.</p>
+</div>
+
+<div class="card">
+  <h3>Smarter Order Timing <span class="tag">New</span></h3>
+  <div class="what-changed">What changed</div>
+  <p>The app now only places buy orders during market hours (9:30 AM – 4:00 PM Eastern). Previously it could attempt orders outside those hours, which caused the stop loss and take profit to be silently cancelled by Alpaca.</p>
+  <div class="what-means">What this means for you</div>
+  <p>No more cancelled stops. Every trade placed will have its full protection attached.</p>
+</div>
+
+<div class="card">
+  <h3>Automatic Watch Radar</h3>
+  <div class="what-changed">What changed</div>
+  <p>After each trading cycle, the Watchlist tab now automatically fills with tickers that are close to the buy threshold — stocks the screener flagged as worth monitoring but not quite ready to trade yet.</p>
+  <div class="what-means">What this means for you</div>
+  <p>Open the Watchlist tab to see what the system is keeping an eye on. If something looks interesting you can run a manual scan and trigger a cycle yourself.</p>
+</div>
+
+<div class="card">
+  <h3>Full Market Scanning</h3>
+  <div class="what-changed">What changed</div>
+  <p>The trading cycles now scan the entire S&amp;P 500 + Nasdaq 100 (around 600 stocks) instead of just the tickers you manually added to the watchlist.</p>
+  <div class="what-means">What this means for you</div>
+  <p>The app finds the best opportunities across the whole market on its own. You don't need to add anything to the watchlist for trading to work.</p>
+</div>
+
+<div class="card">
+  <h3>Remote Log Monitoring</h3>
+  <div class="what-changed">What changed</div>
+  <p>After every trading cycle, the app sends a summary to a private log repository. This allows Tim to check in on your trading activity remotely.</p>
+  <div class="what-means">What this means for you</div>
+  <p>If something isn't working correctly, Tim can see exactly what happened without needing to be at your computer.</p>
+</div>
+
+<div class="card">
+  <h3>Crypto Trading Added</h3>
+  <div class="what-changed">What changed</div>
+  <p>A new Crypto tab was added to the dashboard. The app now scans 18 cryptocurrencies (Bitcoin, Ethereum, Solana, and more) and paper trades them automatically alongside stocks.</p>
+  <div class="what-means">What this means for you</div>
+  <p>Your paper portfolio now includes both stocks and crypto. Crypto trades 24/7 so it runs outside normal market hours too.</p>
+</div>
+
+<div class="card">
+  <h3>AI Analysis Fixed</h3>
+  <div class="what-changed">What changed</div>
+  <p>Fixed a bug where the AI was receiving placeholder text instead of actual stock data. Every analysis was running without knowing which stock it was analyzing.</p>
+  <div class="what-means">What this means for you</div>
+  <p>The AI recommendations in the Watchlist tab are now based on real data. Analysis quality should be noticeably better and more specific to each stock.</p>
+</div>
+
+<div class="card">
+  <h3>In-App Help System</h3>
+  <div class="what-changed">What changed</div>
+  <p>Added helpful tips and explanations throughout the dashboard. Each tab now has a dismissible tip banner, collapsible help boxes, and tooltips on metrics when you hover over them.</p>
+  <div class="what-means">What this means for you</div>
+  <p>Hover over any number you don't recognize and it will explain what it means. Tips disappear after you've read them so they don't get in the way.</p>
+</div>
+
+<div class="card">
+  <h3>Dashboard Always Loads</h3>
+  <div class="what-changed">What changed</div>
+  <p>Fixed several bugs that caused tabs to appear blank when you first opened the app before running a scan.</p>
+  <div class="what-means">What this means for you</div>
+  <p>All tabs now show content when you open the app, including the Learn tab glossary and the Backtest setup screen.</p>
+</div>
+
+<div class="card">
+  <h3>Backtesting Fixed</h3>
+  <div class="what-changed">What changed</div>
+  <p>Fixed an error that prevented the backtest from running with many tickers. Also fixed the results table so you can sort by any column — Profit Factor, Return %, Win Rate, and more.</p>
+  <div class="what-means">What this means for you</div>
+  <p>You can now test trading strategies against your full watchlist without errors and sort results to find the best-performing strategies easily.</p>
+</div>
+
+<div class="card">
+  <h3>Watchlist Saved Between Sessions</h3>
+  <div class="what-changed">What changed</div>
+  <p>The tickers in your watchlist are now saved to a local file. When you close and reopen the app, your watchlist is exactly as you left it.</p>
+  <div class="what-means">What this means for you</div>
+  <p>You no longer need to re-add your tickers every time you open the dashboard.</p>
+</div>
+
+<div class="card">
+  <h3>Faster Market Scans</h3>
+  <div class="what-changed">What changed</div>
+  <p>Stock data is now downloaded in a single batch request instead of one ticker at a time.</p>
+  <div class="what-means">What this means for you</div>
+  <p>The Run Scan button now shows results much faster — roughly 5–10x faster than before.</p>
+</div>
+
+<div class="card">
+  <h3>Dark Theme on All Machines</h3>
+  <div class="what-changed">What changed</div>
+  <p>Added a configuration file that forces the dark theme regardless of your computer's display settings.</p>
+  <div class="what-means">What this means for you</div>
+  <p>The dashboard looks the same on your computer as it does on Tim's — dark background, easy to read.</p>
+</div>
+
+<footer>TKC Studio — Chicago, IL</footer>
+
+</body>
+</html>
