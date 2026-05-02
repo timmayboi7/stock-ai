@@ -186,6 +186,9 @@ def log_cycle(
     _push_file("summary/latest.json", payload,
                f"[{MACHINE_ID}] latest cycle update {timestamp}")
 
+    # Update machine index — one file listing all machines and last activity
+    _update_machine_index(timestamp, cycle_type, payload["summary"])
+
     # Update daily summary
     _push_daily_summary(date_str, payload)
 
@@ -235,6 +238,45 @@ def log_portfolio_snapshot(account: dict, positions: dict) -> bool:
     path    = f"portfolio/{date_str}_snapshot.json"
     message = f"[{MACHINE_ID}] portfolio snapshot — ${account.get('portfolio_value',0):,.2f}"
     return _push_file(path, payload, message)
+
+
+def _update_machine_index(timestamp: str, cycle_type: str, summary: dict) -> bool:
+    """
+    Update summary/machines.json with latest activity per machine.
+    This is the single file I can always check to see all machines at a glance.
+    """
+    path = "summary/machines.json"
+
+    # Read existing index
+    existing = {}
+    try:
+        url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"token {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json",
+            }
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read())
+            existing = json.loads(base64.b64decode(data["content"]).decode())
+    except Exception:
+        pass
+
+    # Update this machine's entry
+    existing[MACHINE_ID] = {
+        "last_seen":       timestamp,
+        "last_cycle_type": cycle_type,
+        "portfolio_value": summary.get("portfolio_value", 0),
+        "cash":            summary.get("cash", 0),
+        "tickers_scanned": summary.get("tickers_scanned", 0),
+        "entries":         summary.get("entries", 0),
+        "exits":           summary.get("exits", 0),
+    }
+
+    return _push_file(path, existing,
+                      f"[{MACHINE_ID}] heartbeat {timestamp}")
 
 
 def _push_daily_summary(date_str: str, cycle_payload: dict) -> bool:
